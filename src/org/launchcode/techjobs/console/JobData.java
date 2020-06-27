@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LaunchCode
@@ -62,7 +63,7 @@ public class JobData {
      * with "Enterprise Holdings, Inc".
      *
      * @param column   Column that should be searched.
-     * @param value Value of teh field to search for
+     * @param value Value of the field to search for
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
@@ -74,7 +75,7 @@ public class JobData {
 
         for (HashMap<String, String> row : allJobs) {
 
-            String aValue = row.get(column);
+            String aValue = row.get(column).toLowerCase();
 
             if (aValue.contains(value)) {
                 jobs.add(row);
@@ -83,6 +84,35 @@ public class JobData {
 
         return jobs;
     }
+
+    public static ArrayList<HashMap<String, String>> findByValue (String searchTerm){
+
+        // load data, if not already loaded
+        loadData();
+
+        /*
+        How I think this should work.
+            1. Create a boolean variable "valueFound", that is false
+            2. Iterate through every column in every map
+            3. Once a match is found, add that object to the job array change valueFound to true and
+         */
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> row : allJobs) {
+            for (String column : row.keySet()) {
+
+                String aValue = row.get(column).toLowerCase();
+
+                if (aValue.contains(searchTerm)) {
+                    jobs.add(row);
+                    break;
+                }
+            }
+        }
+        return jobs;
+    }
+
 
     /**
      * Read in data from a CSV file and store it in a list
@@ -114,6 +144,7 @@ public class JobData {
                 }
 
                 allJobs.add(newJob);
+                //allJobs is an array, with hashMap objects (of string keys and values) composing each item in the array, .
             }
 
             // flag the data as loaded, so we don't do it twice
@@ -124,5 +155,6 @@ public class JobData {
             e.printStackTrace();
         }
     }
+
 
 }
